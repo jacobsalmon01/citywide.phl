@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd C:/Users/jsalm/personal-workspace/citywide.philly && npx vite build 2>&1)"
+    ]
+  }
+}
