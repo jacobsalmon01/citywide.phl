@@ -5,7 +5,6 @@ export default function SubmitForm({ bars, onBack }) {
   const [mode, setMode] = useState('new') // 'new' | 'update'
   const [selectedBarId, setSelectedBarId] = useState('')
   const [name, setName] = useState('')
-  const [address, setAddress] = useState('')
   const [price, setPrice] = useState('')
   const [description, setDescription] = useState('')
   const [note, setNote] = useState('')
@@ -19,7 +18,6 @@ export default function SubmitForm({ bars, onBack }) {
     const bar = bars.find(b => b.id === barId)
     if (bar) {
       setName(bar.name)
-      setAddress(bar.address)
       setPrice(bar.citywide_price || '')
       setDescription(bar.citywide_description || '')
     }
@@ -29,7 +27,6 @@ export default function SubmitForm({ bars, onBack }) {
     setMode(newMode)
     setSelectedBarId('')
     setName('')
-    setAddress('')
     setPrice('')
     setDescription('')
     setNote('')
@@ -44,7 +41,6 @@ export default function SubmitForm({ bars, onBack }) {
       type: mode,
       bar_id: mode === 'update' ? selectedBarId || null : null,
       name: name.trim(),
-      address: mode === 'new' ? address.trim() : null,
       citywide_price: price.trim() || null,
       citywide_description: description.trim() || null,
       note: note.trim() || null,
@@ -130,27 +126,6 @@ export default function SubmitForm({ bars, onBack }) {
             disabled={mode === 'update' && !!selectedBar}
           />
         </label>
-
-        {mode === 'new' && (
-          <label className="submit__field">
-            <span className="submit__label">ADDRESS</span>
-            <input
-              className="submit__input"
-              type="text"
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-              placeholder="e.g. 347 S 13th St, Philadelphia, PA"
-              required
-            />
-          </label>
-        )}
-
-        {mode === 'update' && selectedBar && (
-          <div className="submit__field">
-            <span className="submit__label">ADDRESS</span>
-            <span className="submit__locked">{selectedBar.address}</span>
-          </div>
-        )}
 
         <label className="submit__field">
           <span className="submit__label">CITY WIDE PRICE</span>

@@ -40,7 +40,7 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
   function canApprove(submission) {
     const fields = adminFields[submission.id]
     if (submission.type === 'new') {
-      return fields?.placeId?.trim() && fields?.lat?.trim() && fields?.lng?.trim()
+      return fields?.placeId?.trim() && fields?.address?.trim() && fields?.lat?.trim() && fields?.lng?.trim()
     }
     // Updates: place ID required if bar doesn't already have one
     if (submission.type === 'update' && submission.bar_id) {
@@ -60,7 +60,7 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
     if (submission.type === 'new') {
       const { error } = await supabase.from('bars').insert({
         name: submission.name,
-        address: submission.address,
+        address: fields.address.trim(),
         lat: parseFloat(fields.lat),
         lng: parseFloat(fields.lng),
         citywide_price: submission.citywide_price || 'Ask',
@@ -158,9 +158,6 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
                   : s.name}
               </h3>
 
-              {s.type === 'new' && s.address && (
-                <p className="admin__card-detail">{s.address}</p>
-              )}
 
               {s.citywide_price && (
                 <p className="admin__card-detail">
@@ -187,6 +184,21 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
               </p>
 
               <div className="admin__fields">
+                {s.type === 'new' && (
+                  <label className="admin__field">
+                    <span className="admin__field-label">
+                      ADDRESS<span className="admin__required">*</span>
+                    </span>
+                    <input
+                      className="admin__field-input"
+                      type="text"
+                      placeholder="e.g. 347 S 13th St, Philadelphia, PA"
+                      value={getField(s.id, 'address')}
+                      onChange={e => setField(s.id, 'address', e.target.value)}
+                    />
+                  </label>
+                )}
+
                 <label className="admin__field">
                   <span className="admin__field-label">
                     GOOGLE PLACE ID

@@ -119,7 +119,7 @@ export default function App() {
             onClick={() => setView('map')}
             style={{ cursor: 'pointer' }}
           >
-            CITYWIDE<span className="header__dot">.</span>PHILLY
+            CITYWIDE<span className="header__dot">.</span>PHL
           </h1>
           <p className="header__tagline">Shot & a beer. Every dive. One map.</p>
           {isAdmin && (
