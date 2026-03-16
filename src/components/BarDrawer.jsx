@@ -83,20 +83,22 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   let isOpen = null
   let todayHours = null
   if (openingHours) {
-    let computedIsOpen = null
-    try {
-      if (typeof openingHours.isOpen === 'function') {
-        computedIsOpen = openingHours.isOpen()
-      } else if (typeof openingHours.openNow === 'boolean') {
-        computedIsOpen = openingHours.openNow
-      } else if (typeof openingHours.open_now === 'boolean') {
-        computedIsOpen = openingHours.open_now
+    if (openingHours.periods?.length) {
+      const now = new Date()
+      const nowVal = now.getDay() * 1440 + now.getHours() * 60 + now.getMinutes()
+      isOpen = false
+      for (const period of openingHours.periods) {
+        const o = period.open
+        const c = period.close
+        if (!o) continue
+        if (!c) { isOpen = true; break }
+        const openVal = o.day * 1440 + o.hour * 60 + (o.minute ?? 0)
+        let closeVal = c.day * 1440 + c.hour * 60 + (c.minute ?? 0)
+        if (closeVal < openVal) closeVal += 7 * 1440
+        let check = nowVal
+        if (check < openVal) check += 7 * 1440
+        if (check >= openVal && check < closeVal) { isOpen = true; break }
       }
-    } catch {
-      computedIsOpen = null
-    }
-    if (typeof computedIsOpen === 'boolean') {
-      isOpen = computedIsOpen
     }
     if (openingHours.weekdayDescriptions?.length) {
       const jsDay = new Date().getDay()
