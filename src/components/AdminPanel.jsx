@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { getNeighborhood } from '../lib/neighborhoods'
 
 export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
   const [submissions, setSubmissions] = useState([])
@@ -58,15 +59,19 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
     const fields = adminFields[submission.id] || {}
 
     if (submission.type === 'new') {
+      const lat = parseFloat(fields.lat)
+      const lng = parseFloat(fields.lng)
+      const neighborhood = await getNeighborhood(lat, lng)
       const { error } = await supabase.from('bars').insert({
         name: submission.name,
         address: fields.address.trim(),
-        lat: parseFloat(fields.lat),
-        lng: parseFloat(fields.lng),
+        lat,
+        lng,
         citywide_price: submission.citywide_price || 'Ask',
         citywide_description: submission.citywide_description || null,
         citywide_rating: 0,
         google_place_id: fields.placeId.trim(),
+        neighborhood: neighborhood || null,
       })
 
       if (error) {
@@ -135,9 +140,11 @@ export default function AdminPanel({ bars, onBack, onBarsUpdated }) {
     <div className="admin">
       <div className="admin__header">
         <h2 className="admin__title">SUBMISSIONS</h2>
-        <button className="admin__refresh" onClick={fetchSubmissions}>
-          Refresh
-        </button>
+        <div className="admin__header-actions">
+          <button className="admin__refresh" onClick={fetchSubmissions}>
+            Refresh
+          </button>
+        </div>
       </div>
 
       {loading ? (

@@ -5,6 +5,7 @@ import MapView from './components/Map'
 import BarDrawer from './components/BarDrawer'
 import SubmitForm from './components/SubmitForm'
 import AdminPanel from './components/AdminPanel'
+import Leaderboard from './components/Leaderboard'
 import DiveSpinner from './components/DiveSpinner'
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -184,6 +185,14 @@ export default function App() {
                   <span className="toolbar__divider" />
                   <button
                     className="toolbar__btn"
+                    onClick={() => setView('leaderboard')}
+                    disabled={bars.length === 0}
+                  >
+                    FIND A DRINK
+                  </button>
+                  <span className="toolbar__divider" />
+                  <button
+                    className="toolbar__btn"
                     onClick={() => setView('submit')}
                   >
                     SUBMIT OR UPDATE A BAR
@@ -202,6 +211,19 @@ export default function App() {
 
           {view === 'submit' && (
             <SubmitForm bars={bars} onBack={() => setView('map')} />
+          )}
+
+          {view === 'leaderboard' && (
+            <Leaderboard
+              bars={bars}
+              onBarSelect={(bar) => {
+                setFlyTo({ lat: bar.lat, lng: bar.lng, _ts: Date.now() })
+                setHighlightId(bar.id)
+                setSelectedBar(bar)
+                setView('map')
+              }}
+              onBack={() => setView('map')}
+            />
           )}
 
           {view === 'admin' && isAdmin && (
