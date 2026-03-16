@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { TAGS } from '../lib/tags'
 import StarRating from './StarRating'
 import useGoogleRating from '../lib/useGoogleRating'
 
@@ -21,19 +22,44 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   const { rating: googleRating, reviewCount, loading: googleLoading } = useGoogleRating(bar)
   const [verifying, setVerifying] = useState(false)
   const [justVerified, setJustVerified] = useState(false)
+  const [activeTags, setActiveTags] = useState(new Set())
 
   useEffect(() => {
     if (bar) {
       setJustVerified(false)
+      setActiveTags(new Set())
       requestAnimationFrame(() => {
         drawerRef.current?.classList.add('drawer--open')
       })
+
+      supabase
+        .from('bar_tags')
+        .select('tag')
+        .eq('bar_id', bar.id)
+        .then(({ data }) => {
+          if (data) setActiveTags(new Set(data.map(r => r.tag)))
+        })
     }
-  }, [bar])
+  }, [bar?.id])
 
   function handleClose() {
     drawerRef.current?.classList.remove('drawer--open')
     setTimeout(onClose, 280)
+  }
+
+  async function handleTagToggle(tag) {
+    const isActive = activeTags.has(tag)
+    setActiveTags(prev => {
+      const next = new Set(prev)
+      if (isActive) next.delete(tag)
+      else next.add(tag)
+      return next
+    })
+    if (isActive) {
+      await supabase.from('bar_tags').delete().eq('bar_id', bar.id).eq('tag', tag)
+    } else {
+      await supabase.from('bar_tags').insert({ bar_id: bar.id, tag })
+    }
   }
 
   async function handleVerify() {
@@ -100,6 +126,23 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
         {bar.citywide_description && (
           <p className="drawer__blurb">"{bar.citywide_description}"</p>
         )}
+
+        <div className="drawer__divider" />
+
+        <div className="drawer__tags">
+          <span className="drawer__tags-label">TAGS</span>
+          <div className="drawer__tags-list">
+            {TAGS.map(tag => (
+              <button
+                key={tag}
+                className={`drawer__tag ${activeTags.has(tag) ? 'drawer__tag--active' : ''}`}
+                onClick={() => handleTagToggle(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="drawer__divider" />
 

@@ -62,6 +62,35 @@ body {
   background-repeat: repeat;
 }
 
+/* ── Scrollbars ────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-dark) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--rust);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* ── Page Layout ───────────────────────── */
 
 .page {
@@ -429,6 +458,57 @@ body {
   color: var(--ink-faint);
   text-transform: uppercase;
   text-align: center;
+}
+
+/* ── Tags ──────────────────────────────── */
+
+.drawer__tags {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drawer__tags-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: var(--ink-faint);
+}
+
+.drawer__tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.drawer__tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  line-height: 1.4;
+}
+
+.drawer__tag:hover {
+  border-color: var(--border-dark);
+  color: var(--ink-light);
+}
+
+.drawer__tag--active {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+.drawer__tag--active:hover {
+  background: var(--ink-light);
+  border-color: var(--ink-light);
+  color: var(--cream);
 }
 
 /* ── Dual Ratings ──────────────────────── */
