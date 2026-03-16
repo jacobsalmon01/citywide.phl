@@ -369,6 +369,39 @@ body {
   letter-spacing: 0.3px;
 }
 
+.drawer__hours-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.drawer__open-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 2px 6px;
+  line-height: 1.4;
+}
+
+.drawer__open-badge--open {
+  background: var(--gold);
+  color: var(--cream);
+}
+
+.drawer__open-badge--closed {
+  background: transparent;
+  color: var(--rust);
+  border: 1px solid var(--rust);
+  padding: 1px 6px;
+}
+
+.drawer__hours-today {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
 .drawer__divider {
   height: 1px;
   background: var(--border);

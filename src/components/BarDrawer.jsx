@@ -19,7 +19,7 @@ function timeAgo(dateStr) {
 
 export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   const drawerRef = useRef(null)
-  const { rating: googleRating, reviewCount, loading: googleLoading } = useGoogleRating(bar)
+  const { rating: googleRating, reviewCount, openingHours, loading: googleLoading } = useGoogleRating(bar)
   const [verifying, setVerifying] = useState(false)
   const [justVerified, setJustVerified] = useState(false)
   const [activeTags, setActiveTags] = useState(new Set())
@@ -79,6 +79,32 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   if (!bar) return null
 
   const verifiedLabel = justVerified ? 'today' : timeAgo(bar.last_verified_at)
+
+  let isOpen = null
+  let todayHours = null
+  if (openingHours) {
+    let computedIsOpen = null
+    try {
+      if (typeof openingHours.isOpen === 'function') {
+        computedIsOpen = openingHours.isOpen()
+      } else if (typeof openingHours.openNow === 'boolean') {
+        computedIsOpen = openingHours.openNow
+      } else if (typeof openingHours.open_now === 'boolean') {
+        computedIsOpen = openingHours.open_now
+      }
+    } catch {
+      computedIsOpen = null
+    }
+    if (typeof computedIsOpen === 'boolean') {
+      isOpen = computedIsOpen
+    }
+    if (openingHours.weekdayDescriptions?.length) {
+      const jsDay = new Date().getDay()
+      const idx = jsDay === 0 ? 6 : jsDay - 1
+      const desc = openingHours.weekdayDescriptions[idx]
+      if (desc) todayHours = desc.replace(/^[^:]+:\s*/, '')
+    }
+  }
   const isStale = !bar.last_verified_at || (new Date() - new Date(bar.last_verified_at)) > 90 * 24 * 60 * 60 * 1000
 
   return (
@@ -91,6 +117,19 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
 
         <h2 className="drawer__name">{bar.name}</h2>
         <p className="drawer__address">{bar.address}</p>
+
+        {(isOpen !== null || todayHours) && (
+          <div className="drawer__hours-row">
+            {isOpen !== null && (
+              <span className={`drawer__open-badge drawer__open-badge--${isOpen ? 'open' : 'closed'}`}>
+                {isOpen ? 'OPEN' : 'CLOSED'}
+              </span>
+            )}
+            {todayHours && (
+              <span className="drawer__hours-today">{todayHours}</span>
+            )}
+          </div>
+        )}
 
         <div className="drawer__divider" />
 
