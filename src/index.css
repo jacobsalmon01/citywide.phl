@@ -486,7 +486,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.8px;
   padding: 4px 9px;
-  border: 1px solid var(--border);
+  border: 1px dashed var(--border);
   background: transparent;
   color: var(--ink-faint);
   cursor: pointer;
@@ -494,20 +494,21 @@ body {
   line-height: 1.4;
 }
 
-.drawer__tag:hover {
+.drawer__tag:hover:not(.drawer__tag--active) {
   border-color: var(--border-dark);
+  border-style: solid;
   color: var(--ink-light);
 }
 
 .drawer__tag--active {
-  background: var(--ink);
+  background: var(--rust);
   color: var(--cream);
-  border-color: var(--ink);
+  border: 1px solid var(--rust);
 }
 
 .drawer__tag--active:hover {
-  background: var(--ink-light);
-  border-color: var(--ink-light);
+  background: #7a3325;
+  border-color: #7a3325;
   color: var(--cream);
 }
 
