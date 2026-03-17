@@ -7,6 +7,7 @@ import SubmitForm from './components/SubmitForm'
 import AdminPanel from './components/AdminPanel'
 import Leaderboard from './components/Leaderboard'
 import DiveSpinner from './components/DiveSpinner'
+import AvgPriceBanner from './components/AvgPriceBanner'
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const adminKey = import.meta.env.VITE_ADMIN_KEY
@@ -140,6 +141,8 @@ export default function App() {
             </nav>
           )}
         </header>
+
+        <AvgPriceBanner />
 
         <main className="main">
           {view === 'map' && (

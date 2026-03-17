@@ -1565,6 +1565,337 @@ body {
   letter-spacing: 2px;
 }
 
+/* ── Avg Price Banner ──────────────────── */
+
+@keyframes bannerSlideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.avg-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px 10px 5px 0;
+  margin-bottom: 10px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  animation: bannerSlideIn 0.35s ease both;
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+.avg-banner:hover {
+  background: var(--cream-dark);
+}
+
+.avg-banner__label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.avg-banner__price {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--rust);
+  line-height: 1;
+}
+
+.avg-banner__cta {
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--gold-muted);
+  margin-left: auto;
+  white-space: nowrap;
+  text-transform: uppercase;
+  opacity: 0.8;
+  transition: opacity 0.12s;
+}
+
+.avg-banner:hover .avg-banner__cta {
+  opacity: 1;
+}
+
+/* ── Avg Price Modal ───────────────────── */
+
+.avg-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 40, 37, 0.25);
+  z-index: 90;
+  animation: fadeIn 0.15s ease;
+}
+
+.avg-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 0 var(--cream-dark);
+  width: min(340px, calc(100vw - 32px));
+  padding: 24px 20px 20px;
+  animation: fadeIn 0.18s ease;
+}
+
+.avg-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--ink-faint);
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.avg-modal__close:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Hero */
+.avg-modal__hero {
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+.avg-modal__hero-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.avg-modal__hero-price {
+  font-family: var(--font-display);
+  font-size: 64px;
+  color: var(--rust);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.avg-modal__hero-meta {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Divider */
+.avg-modal__divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 14px;
+}
+
+/* Range */
+.avg-modal__range {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+}
+
+.avg-modal__range-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.avg-modal__range-col--right {
+  text-align: right;
+}
+
+.avg-modal__range-label {
+  font-family: var(--font-body);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.avg-modal__range-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: var(--ink-light);
+  line-height: 1.2;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.avg-modal__range-col--right .avg-modal__range-name {
+  margin-left: auto;
+}
+
+.avg-modal__range-price {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.avg-modal__range-price--low  { color: var(--gold); }
+.avg-modal__range-price--high { color: var(--rust); }
+
+.avg-modal__range-sep {
+  width: 1px;
+  background: var(--border);
+  margin: 0 12px;
+  align-self: stretch;
+}
+
+/* Caveat / fine print */
+.avg-modal__caveat {
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-style: italic;
+  color: var(--ink-faint);
+  line-height: 1.65;
+  letter-spacing: 0.2px;
+  border-left: 2px solid var(--border);
+  padding-left: 8px;
+  margin-bottom: 14px;
+}
+
+/* Graph stub */
+.avg-modal__graph-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avg-modal__graph-title {
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.avg-modal__graph {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+  height: 80px;
+}
+
+.avg-modal__graph-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 4px 16px 0;
+  flex-shrink: 0;
+}
+
+.avg-modal__graph-y span {
+  font-family: var(--font-body);
+  font-size: 8px;
+  color: var(--ink-faint);
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.avg-modal__graph-area {
+  flex: 1;
+  position: relative;
+  border-left: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--border-dark);
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 0 4px;
+  overflow: hidden;
+}
+
+.avg-modal__graph-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  height: 100%;
+}
+
+.avg-modal__graph-bar {
+  width: 100%;
+  height: var(--bar-h, 20%);
+  background: var(--border);
+  opacity: 0.35;
+  border-top: 1px dashed var(--border-dark);
+}
+
+.avg-modal__graph-month {
+  font-family: var(--font-body);
+  font-size: 7px;
+  letter-spacing: 0.5px;
+  color: var(--ink-faint);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* Overlay on graph */
+.avg-modal__graph-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 235, 225, 0.82);
+  backdrop-filter: blur(1px);
+}
+
+.avg-modal__graph-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.avg-modal__graph-msg-line {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--ink-light);
+}
+
+.avg-modal__graph-msg-line--sub {
+  font-size: 9px;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
 /* ── Desktop ───────────────────────────── */
 
 @media (min-width: 768px) {
