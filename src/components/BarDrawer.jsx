@@ -40,6 +40,12 @@ function saveRating(barId, rating) {
   localStorage.setItem('citywide_rated', JSON.stringify(rated))
 }
 
+function clearRating(barId) {
+  const rated = getRatedBars()
+  delete rated[barId]
+  localStorage.setItem('citywide_rated', JSON.stringify(rated))
+}
+
 export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   const drawerRef = useRef(null)
   const { rating: googleRating, reviewCount, openingHours, loading: googleLoading } = useGoogleRating(bar)
@@ -50,10 +56,12 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   const [citywideRating, setCitywideRating] = useState(0)
   const [citywideRatingCount, setCitywideRatingCount] = useState(0)
   const [submittingRating, setSubmittingRating] = useState(false)
+  const [justRated, setJustRated] = useState(false)
 
   useEffect(() => {
     if (bar) {
       setJustVerified(false)
+      setJustRated(false)
       setActiveTags(new Set())
       setCitywideRating(bar.citywide_rating ?? 0)
       setCitywideRatingCount(bar.citywide_rating_count ?? 0)
@@ -136,6 +144,34 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
       setCitywideRatingCount(newCount)
       setUserRating(newRating)
       saveRating(bar.id, newRating)
+      setJustRated(true)
+      setTimeout(() => setJustRated(false), 600)
+      onBarUpdated?.()
+    }
+
+    setSubmittingRating(false)
+  }
+
+  async function handleRemoveRating() {
+    setSubmittingRating(true)
+    const sessionId = getSessionId()
+
+    const { error } = await supabase
+      .from('bar_ratings')
+      .delete()
+      .eq('bar_id', bar.id)
+      .eq('session_id', sessionId)
+
+    if (!error) {
+      const oldCount = citywideRatingCount
+      const oldAvg = citywideRating
+      const newCount = oldCount - 1
+      const newAvg = newCount > 0 ? (oldAvg * oldCount - userRating) / newCount : 0
+
+      setCitywideRating(newAvg)
+      setCitywideRatingCount(newCount)
+      setUserRating(null)
+      clearRating(bar.id)
       onBarUpdated?.()
     }
 
@@ -283,18 +319,27 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
 
         <div className="drawer__divider" />
 
-        <div className="drawer__community-rating">
-          <span className="drawer__rating-source">
-            {userRating ? 'YOUR RATING' : 'RATE THIS BAR'}
-          </span>
+        <div className={`drawer__community-rating ${justRated ? 'drawer__community-rating--flash' : ''}`}>
+          <div className="drawer__community-rating-header">
+            <span className="drawer__rating-source">
+              {userRating ? 'YOUR RATING' : 'RATE THIS BAR'}
+            </span>
+            {userRating && (
+              <button
+                className="drawer__rating-remove"
+                onClick={handleRemoveRating}
+                disabled={submittingRating}
+              >
+                remove
+              </button>
+            )}
+          </div>
           <StarRating
             rating={userRating ?? 0}
             interactive={!submittingRating}
             onRate={handleRate}
+            accent={!!userRating}
           />
-          {userRating && (
-            <span className="drawer__rating-change">tap stars to change</span>
-          )}
         </div>
       </aside>
     </>

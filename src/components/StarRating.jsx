@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function StarRating({ rating = 0, label, suffix, interactive = false, onRate }) {
+export default function StarRating({ rating = 0, label, suffix, interactive = false, onRate, accent = false }) {
   const [hovered, setHovered] = useState(null)
   const clamped = Math.max(0, Math.min(5, rating))
   const display = interactive ? (hovered ?? clamped) : clamped
@@ -8,11 +8,15 @@ export default function StarRating({ rating = 0, label, suffix, interactive = fa
   const stars = []
   for (let i = 1; i <= 5; i++) {
     const filled = i <= Math.round(display)
+    const filledClass = filled
+      ? (accent ? 'star--accent' : 'star--filled')
+      : 'star--empty'
+
     if (interactive) {
       stars.push(
         <button
           key={i}
-          className={`star star--interactive ${filled ? 'star--filled' : 'star--empty'}`}
+          className={`star star--interactive ${filledClass}`}
           aria-label={`Rate ${i} star${i !== 1 ? 's' : ''}`}
           onMouseEnter={() => setHovered(i)}
           onMouseLeave={() => setHovered(null)}
@@ -25,7 +29,7 @@ export default function StarRating({ rating = 0, label, suffix, interactive = fa
       stars.push(
         <span
           key={i}
-          className={`star ${filled ? 'star--filled' : 'star--empty'}`}
+          className={`star ${filledClass}`}
           aria-hidden="true"
         >
           ★

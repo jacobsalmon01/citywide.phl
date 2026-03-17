@@ -599,6 +599,10 @@ body {
   color: var(--gold);
 }
 
+.star--accent {
+  color: var(--rust);
+}
+
 .star--empty {
   color: var(--cream-dark);
 }
@@ -621,15 +625,22 @@ body {
 .star--interactive {
   background: none;
   border: none;
-  padding: 0;
+  padding: 4px 2px;
+  margin: 0 -2px;
   cursor: pointer;
-  font-size: 22px;
   line-height: 1;
-  transition: transform 0.1s, color 0.1s;
+  transition: color 0.12s;
 }
 
-.star--interactive:hover {
-  transform: scale(1.2);
+.star--interactive.star--empty:hover,
+.star--interactive.star--empty:hover ~ .star--interactive {
+  color: var(--border-dark);
+}
+
+@keyframes ratingPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
 /* ── Community Rating ──────────────────── */
@@ -640,11 +651,39 @@ body {
   gap: 6px;
 }
 
-.drawer__rating-change {
+.drawer__community-rating--flash {
+  animation: ratingPop 0.35s ease;
+}
+
+.drawer__community-rating-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer__rating-remove {
   font-family: var(--font-body);
   font-size: 10px;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--border);
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.drawer__rating-remove:hover:not(:disabled) {
+  color: var(--rust);
+  text-decoration-color: var(--rust);
+}
+
+.drawer__rating-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ── Toolbar ──────────────────────────── */
