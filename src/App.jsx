@@ -204,6 +204,14 @@ export default function App() {
                 <p className="toolbar__note">
                   Work in progress — {bars.length} bars and counting.
                 </p>
+                <a
+                  className="tip-link"
+                  href="https://buymeacoffee.com/REPLACE_ME"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  buy me a citywide &rarr;
+                </a>
               </div>
 
               {selectedBar && (

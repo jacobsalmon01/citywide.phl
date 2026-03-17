@@ -737,6 +737,25 @@ body {
   margin-top: 4px;
 }
 
+/* ── Tip Link ─────────────────────────── */
+
+.tip-link {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+  transition: color 0.15s, text-decoration-color 0.15s;
+  margin-top: 2px;
+}
+
+.tip-link:hover {
+  color: var(--gold-muted);
+  text-decoration-color: var(--gold-muted);
+}
+
 /* ── Submit Form ───────────────────────── */
 
 .submit {
