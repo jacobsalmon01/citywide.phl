@@ -487,14 +487,6 @@ body {
   margin-bottom: 14px;
 }
 
-.drawer__coming-soon {
-  font-family: var(--font-body);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  color: var(--ink-faint);
-  text-transform: uppercase;
-  text-align: center;
-}
 
 /* ── Tags ──────────────────────────────── */
 
@@ -624,6 +616,35 @@ body {
   font-size: 10px;
   color: var(--ink-faint);
   margin-left: 3px;
+}
+
+.star--interactive {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.1s, color 0.1s;
+}
+
+.star--interactive:hover {
+  transform: scale(1.2);
+}
+
+/* ── Community Rating ──────────────────── */
+
+.drawer__community-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawer__rating-change {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  color: var(--ink-faint);
 }
 
 /* ── Toolbar ──────────────────────────── */

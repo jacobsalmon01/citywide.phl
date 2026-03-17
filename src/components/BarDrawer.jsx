@@ -17,17 +17,48 @@ function timeAgo(dateStr) {
   return `${Math.floor(months / 12)}y ago`
 }
 
+function getSessionId() {
+  let id = localStorage.getItem('citywide_session')
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem('citywide_session', id)
+  }
+  return id
+}
+
+function getRatedBars() {
+  try {
+    return JSON.parse(localStorage.getItem('citywide_rated') || '{}')
+  } catch {
+    return {}
+  }
+}
+
+function saveRating(barId, rating) {
+  const rated = getRatedBars()
+  rated[barId] = rating
+  localStorage.setItem('citywide_rated', JSON.stringify(rated))
+}
+
 export default function BarDrawer({ bar, onClose, onBarUpdated }) {
   const drawerRef = useRef(null)
   const { rating: googleRating, reviewCount, openingHours, loading: googleLoading } = useGoogleRating(bar)
   const [verifying, setVerifying] = useState(false)
   const [justVerified, setJustVerified] = useState(false)
   const [activeTags, setActiveTags] = useState(new Set())
+  const [userRating, setUserRating] = useState(null)
+  const [citywideRating, setCitywideRating] = useState(0)
+  const [citywideRatingCount, setCitywideRatingCount] = useState(0)
+  const [submittingRating, setSubmittingRating] = useState(false)
 
   useEffect(() => {
     if (bar) {
       setJustVerified(false)
       setActiveTags(new Set())
+      setCitywideRating(bar.citywide_rating ?? 0)
+      setCitywideRatingCount(bar.citywide_rating_count ?? 0)
+      setUserRating(getRatedBars()[bar.id] ?? null)
+
       requestAnimationFrame(() => {
         drawerRef.current?.classList.add('drawer--open')
       })
@@ -74,6 +105,41 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
       setJustVerified(true)
       onBarUpdated?.()
     }
+  }
+
+  async function handleRate(newRating) {
+    setSubmittingRating(true)
+    const sessionId = getSessionId()
+
+    const { error } = await supabase
+      .from('bar_ratings')
+      .upsert(
+        { bar_id: bar.id, session_id: sessionId, rating: newRating, updated_at: new Date().toISOString() },
+        { onConflict: 'bar_id,session_id' }
+      )
+
+    if (!error) {
+      const oldRating = userRating
+      const oldCount = citywideRatingCount
+      const oldAvg = citywideRating
+      let newAvg, newCount
+
+      if (oldRating == null) {
+        newCount = oldCount + 1
+        newAvg = (oldAvg * oldCount + newRating) / newCount
+      } else {
+        newCount = oldCount
+        newAvg = oldCount > 0 ? (oldAvg * oldCount - oldRating + newRating) / oldCount : newRating
+      }
+
+      setCitywideRating(newAvg)
+      setCitywideRatingCount(newCount)
+      setUserRating(newRating)
+      saveRating(bar.id, newRating)
+      onBarUpdated?.()
+    }
+
+    setSubmittingRating(false)
   }
 
   if (!bar) return null
@@ -204,8 +270,11 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
 
           <div className="drawer__rating-block">
             <span className="drawer__rating-source">CITYWIDE</span>
-            {bar.citywide_rating > 0 ? (
-              <StarRating rating={bar.citywide_rating} />
+            {citywideRating > 0 ? (
+              <StarRating
+                rating={citywideRating}
+                suffix={citywideRatingCount > 0 ? `(${citywideRatingCount})` : null}
+              />
             ) : (
               <span className="drawer__rating-na">no ratings yet</span>
             )}
@@ -214,7 +283,19 @@ export default function BarDrawer({ bar, onClose, onBarUpdated }) {
 
         <div className="drawer__divider" />
 
-        <p className="drawer__coming-soon">Community ratings coming soon</p>
+        <div className="drawer__community-rating">
+          <span className="drawer__rating-source">
+            {userRating ? 'YOUR RATING' : 'RATE THIS BAR'}
+          </span>
+          <StarRating
+            rating={userRating ?? 0}
+            interactive={!submittingRating}
+            onRate={handleRate}
+          />
+          {userRating && (
+            <span className="drawer__rating-change">tap stars to change</span>
+          )}
+        </div>
       </aside>
     </>
   )
