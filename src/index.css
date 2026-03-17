@@ -748,6 +748,7 @@ body {
   text-underline-offset: 3px;
   text-decoration-color: var(--border);
   transition: color 0.15s, text-decoration-color 0.15s;
+  margin-top: 2px;
 }
 
 .tip-link:hover {
