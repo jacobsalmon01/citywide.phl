@@ -20,6 +20,17 @@ export default function MusicPlayer() {
   }, [])
 
   useEffect(() => {
+    function handleVisibility() {
+      if (document.hidden && audioRef.current) {
+        audioRef.current.pause()
+        setPlaying(false)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [])
+
+  useEffect(() => {
     if (!expanded) return
     function handleClick(e) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
