@@ -2322,4 +2322,10 @@ body {
     flex: 1;
     width: auto;
   }
+
+  .music {
+    bottom: auto;
+    top: 10px;
+    left: 10px;
+  }
 }

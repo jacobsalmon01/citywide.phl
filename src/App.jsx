@@ -156,7 +156,7 @@ export default function App() {
           >
             CITYWIDE<span className="header__dot">.</span>PHL
           </h1>
-          <p className="header__tagline">Shot & a beer. Every dive. One map.</p>
+          <p className="header__tagline">Know before you go!</p>
           {isAdmin && (
             <nav className="header__nav">
               <button

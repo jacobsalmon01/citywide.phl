@@ -134,7 +134,7 @@ export default function SubmitForm({ bars, onBack }) {
             type="text"
             value={price}
             onChange={e => setPrice(e.target.value)}
-            placeholder="e.g. $5, $6, 5 and change"
+            placeholder="e.g. $6, $4.50"
           />
         </label>
 
@@ -156,8 +156,8 @@ export default function SubmitForm({ bars, onBack }) {
             value={note}
             onChange={e => setNote(e.target.value)}
             placeholder={mode === 'update'
-              ? "What changed? e.g. Price went up $1 in January"
-              : "Anything else? e.g. Cash only, great jukebox"}
+              ? "What changed? e.g. Price went up to $7"
+              : "Anything else?"}
             rows={2}
           />
         </label>
