@@ -8,9 +8,11 @@ import AdminPanel from './components/AdminPanel'
 import Leaderboard from './components/Leaderboard'
 import DiveSpinner from './components/DiveSpinner'
 import AvgPriceBanner from './components/AvgPriceBanner'
+import MusicPlayer from './components/MusicPlayer'
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const adminKey = import.meta.env.VITE_ADMIN_KEY
+const ADMIN_SESSION_KEY = 'cw_admin'
 
 function haversine(lat1, lng1, lat2, lng2) {
   const R = 3958.8 // miles
@@ -32,10 +34,20 @@ export default function App() {
   const [highlightId, setHighlightId] = useState(null)
   const [nearMeStatus, setNearMeStatus] = useState(null)
   const [showSpinner, setShowSpinner] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(() => sessionStorage.getItem(ADMIN_SESSION_KEY) === '1')
+  const [showAdminGate, setShowAdminGate] = useState(false)
+  const [adminInput, setAdminInput] = useState('')
+  const [adminError, setAdminError] = useState(false)
 
-  const isAdmin = useMemo(() => {
-    const params = new URLSearchParams(window.location.search)
-    return params.get('admin') === adminKey
+  useEffect(() => {
+    if (window.location.pathname === '/admin') {
+      window.history.replaceState(null, '', '/')
+      if (isAdmin) {
+        setView('admin')
+      } else {
+        setShowAdminGate(true)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -104,6 +116,27 @@ export default function App() {
     if (bars.length === 0) return
     setShowSpinner(true)
   }, [bars])
+
+  function handleAdminSubmit(e) {
+    e.preventDefault()
+    if (adminInput === adminKey) {
+      sessionStorage.setItem(ADMIN_SESSION_KEY, '1')
+      setIsAdmin(true)
+      setShowAdminGate(false)
+      setView('admin')
+      setAdminInput('')
+      setAdminError(false)
+    } else {
+      setAdminError(true)
+      setAdminInput('')
+    }
+  }
+
+  function handleAdminGateClose() {
+    setShowAdminGate(false)
+    setAdminInput('')
+    setAdminError(false)
+  }
 
   const handleSpinResult = useCallback((bar) => {
     setShowSpinner(false)
@@ -234,6 +267,43 @@ export default function App() {
           )}
         </main>
       </div>
+
+      <MusicPlayer />
+
+      {showAdminGate && (
+        <div className="admin-gate__backdrop" onClick={handleAdminGateClose}>
+          <form
+            className="admin-gate"
+            onSubmit={handleAdminSubmit}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="admin-gate__lock">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <h2 className="admin-gate__title">STAFF ONLY</h2>
+            <p className="admin-gate__sub">Enter the password to continue.</p>
+            <input
+              className={`admin-gate__input ${adminError ? 'admin-gate__input--error' : ''}`}
+              type="password"
+              value={adminInput}
+              onChange={(e) => { setAdminInput(e.target.value); setAdminError(false) }}
+              placeholder={adminError ? 'WRONG PASSWORD' : 'PASSWORD'}
+              autoFocus
+            />
+            <div className="admin-gate__actions">
+              <button type="button" className="admin-gate__btn admin-gate__btn--cancel" onClick={handleAdminGateClose}>
+                BACK
+              </button>
+              <button type="submit" className="admin-gate__btn admin-gate__btn--enter" disabled={!adminInput}>
+                ENTER
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {showSpinner && bars.length > 0 && (
         <DiveSpinner
