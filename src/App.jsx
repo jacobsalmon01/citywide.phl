@@ -206,7 +206,7 @@ export default function App() {
                 </p>
                 <a
                   className="tip-link"
-                  href="https://buymeacoffee.com/REPLACE_ME"
+                  href="https://buymeacoffee.com/jacobsalmon01"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
